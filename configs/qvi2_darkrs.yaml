@@ -1,0 +1,126 @@
+name: 000_QVI_lr1e4_DarkRS_e401_B1G4
+
+dataset:
+    train:
+        name: DarkRS
+        mode: train
+        time_map: True
+
+        sampling: n_c  # "n_n" and "n_c" , "n_l", "n_r"
+        overlapping: True
+        interval: 1
+        pos: GS_2  # middle
+        img_type: RGB
+        
+        root_gt: ./data/DarkRS
+        num_frames: 3
+        
+        # augmentations
+        augmentation:
+            RandomCrop: 
+                size : [480, 256]
+            RandomHorizontalFlip: 
+                p: 0.5
+            RandomVerticalFlip: 
+                p: 0.5
+            RandomRotation90: 
+                p: 0.5
+
+        # dataloader per GPU
+        loader:
+            batch_size: 1
+            num_workers: 1
+
+    val:
+        name: DarkRS
+        mode: val
+        time_map: True
+        
+        sampling: n_c  # "n_n" and "n_c" , "n_l", "n_r"
+        overlapping: True
+        interval: 1
+        pos: GS_2  # middle
+        img_type: RGB
+        
+        root_gt: ./data/DarkRS
+        num_frames: 3
+
+        loader:
+            batch_size: 1
+            num_workers: 1
+    
+    test:
+        name: DarkRS
+        mode: test
+        time_map: True
+        
+        sampling: n_c  # "n_n" and "n_c" , "n_l", "n_r"
+        overlapping: True
+        interval: 1
+        pos: GS_2  # middle
+        img_type: RGB
+        
+        root_gt: ./data/DarkRS
+        num_frames: 3
+
+        loader:
+            batch_size: 1
+            num_workers: 1
+
+
+meta_arch: DarkRSCArch
+model:
+    name: QVInet2
+    args:
+        model: model/raft/models/raft-things.pth
+        small: False
+        mixed_precision: False
+        epi_threshold: 1.0
+    ro_rate: 0.4
+    cam_pos: 0.5
+
+loss: 
+    criterion:
+    - name: CharbonnierLoss
+    - name: PerceptualLossVGG19
+    - name: VariationLoss
+      nc: 2
+    - name: FlowDistillationLoss
+      args:
+            model: model/raft/models/raft-things.pth
+            small: False
+            mixed_precision: False
+            epi_threshold: 1.0
+    
+    weights: 
+    - 1.0
+    - 0.01
+    - 0.001
+    - 0.01
+
+schedule:
+    epochs: 201
+    val_epochs: 10
+    
+    optimizer:
+        name: Adam
+        lr: 0.0001
+        betas: [0.9, 0.99]
+        weight_decay: 0
+        
+    lr_scheduler:
+        name: CosineAnnealingLR
+        T_max: 400
+        eta_min: 1.0e-7
+
+
+logging: 
+    period: 20
+
+ckpt:
+    period: 1
+
+
+work_dir: ./workdir/qvinet/darkrs
+resume_from: None
+# init_mode: True
