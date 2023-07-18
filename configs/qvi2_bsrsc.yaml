@@ -1,19 +1,19 @@
-name: 000_IFRNet_lr1e4_DarkRS_e201_B1G4
+name: 000_QVI_lr1e4_BSRSC_e401_B1G4
 
 dataset:
     train:
-        name: DarkRS
+        name: BSRSC
         mode: train
         time_map: True
 
-        sampling: n_l  # "n_n" and "n_c" , "n_l", "n_r"
+        sampling: n_c  # "n_n" and "n_c" , "n_l", "n_r"
         overlapping: True
         interval: 1
         pos: GS_2  # middle
         img_type: RGB
         
-        root_gt: ./data/DarkRS
-        num_frames: 2
+        root_gt: ./data/BSRSC/train
+        num_frames: 3
         
         # augmentations
         augmentation:
@@ -32,45 +32,52 @@ dataset:
             num_workers: 1
 
     val:
-        name: DarkRS
+        name: BSRSC
         mode: val
         time_map: True
         
-        sampling: n_l  # "n_n" and "n_c" , "n_l", "n_r"
+        sampling: n_c  # "n_n" and "n_c" , "n_l", "n_r"
         overlapping: True
         interval: 1
         pos: GS_2  # middle
         img_type: RGB
         
-        root_gt: ./data/DarkRS
-        num_frames: 2
+        root_gt: ./data/BSRSC/val
+        num_frames: 3
 
         loader:
             batch_size: 1
             num_workers: 1
     
     test:
-        name: DarkRS
+        name: BSRSC
         mode: test
         time_map: True
         
-        sampling: n_l  # "n_n" and "n_c" , "n_l", "n_r"
+        sampling: n_c  # "n_n" and "n_c" , "n_l", "n_r"
         overlapping: True
         interval: 1
         pos: GS_2  # middle
         img_type: RGB
         
-        root_gt: ./data/DarkRS
-        num_frames: 2
+        root_gt: ./data/BSRSC/test
+        num_frames: 3
 
         loader:
             batch_size: 1
             num_workers: 1
 
 
-meta_arch: VIArch
+meta_arch: DarkRSCArch
 model:
-    name: IFRNet_L
+    name: QVInet2
+    args:
+        model: model/raft/models/raft-things.pth
+        small: False
+        mixed_precision: False
+        epi_threshold: 1.0
+    ro_rate: 0.4
+    cam_pos: 0.5
 
 loss: 
     criterion:
@@ -78,19 +85,17 @@ loss:
     - name: PerceptualLossVGG19
     - name: VariationLoss
       nc: 2
-    - name: GeometryLoss
-    - name: VIFlowDistillationLoss
+    - name: FlowDistillationLoss
       args:
-        model: model/raft/models/raft-things.pth
-        small: False
-        mixed_precision: False
-        epi_threshold: 1.0
+            model: model/raft/models/raft-things.pth
+            small: False
+            mixed_precision: False
+            epi_threshold: 1.0
     
     weights: 
     - 1.0
     - 0.01
     - 0.001
-    - 0.01
     - 0.01
 
 schedule:
@@ -116,6 +121,6 @@ ckpt:
     period: 1
 
 
-work_dir: ./workdir/ifrnet/darkrs
+work_dir: ./workdir/qvinet/BSRSC
 resume_from: None
 # init_mode: True
