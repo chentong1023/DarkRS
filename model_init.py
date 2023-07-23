@@ -11,6 +11,7 @@ from loss import DSUNL1Loss, VariationLoss
 from model import rsc_arch
 from model import vi_arch
 from model import dark_rsc_arch
+from model import denoise_rsc_arch
 
 from model import ifrnet
 from model import ifrnet_L

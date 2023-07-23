@@ -17,8 +17,6 @@ dataset:
         
         # augmentations
         augmentation:
-            RandomCrop: 
-                size : [480, 256]
             RandomHorizontalFlip: 
                 p: 0.5
             RandomVerticalFlip: 

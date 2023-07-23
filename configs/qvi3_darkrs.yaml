@@ -1,8 +1,8 @@
-name: 000_QVI_3_lr1e4_BSRSC_e401_B1G4
+name: 000_QVI_lr1e4_DarkRS_e401_B1G4
 
 dataset:
     train:
-        name: BSRSC
+        name: DarkRS
         mode: train
         time_map: True
 
@@ -12,13 +12,15 @@ dataset:
         pos: GS_2  # middle
         img_type: RGB
         
-        root_gt: ./data/BSRSC/train
+        root_gt: ./data/DarkRS
         num_frames: 3
         
         # augmentations
-        augmentation:
-            RandomVerticalFlip: 
-                p: 0.5
+        # augmentation:
+        #     RandomHorizontalFlip: 
+        #         p: 0.5
+            # RandomVerticalFlip: 
+            #     p: 0.5
 
         # dataloader per GPU
         loader:
@@ -26,7 +28,7 @@ dataset:
             num_workers: 1
 
     val:
-        name: BSRSC
+        name: DarkRS
         mode: val
         time_map: True
         
@@ -36,7 +38,7 @@ dataset:
         pos: GS_2  # middle
         img_type: RGB
         
-        root_gt: ./data/BSRSC/val
+        root_gt: ./data/DarkRS
         num_frames: 3
 
         loader:
@@ -44,7 +46,7 @@ dataset:
             num_workers: 1
     
     test:
-        name: BSRSC
+        name: DarkRS
         mode: test
         time_map: True
         
@@ -54,7 +56,7 @@ dataset:
         pos: GS_2  # middle
         img_type: RGB
         
-        root_gt: ./data/BSRSC/test
+        root_gt: ./data/DarkRS
         num_frames: 3
 
         loader:
@@ -62,9 +64,9 @@ dataset:
             num_workers: 1
 
 
-meta_arch: DarkRSCArch
+meta_arch: DenoiseRSCArch
 model:
-    name: QVInet2
+    name: QVInet3
     args:
         model: model/raft/models/raft-things.pth
         small: False
@@ -85,12 +87,14 @@ loss:
             small: False
             mixed_precision: False
             epi_threshold: 1.0
+    - name: ZeroShotDenoiseLoss
     
     weights: 
     - 1.0
     - 0.01
     - 0.001
     - 0.01
+    - 1.0
 
 schedule:
     epochs: 201
@@ -115,6 +119,6 @@ ckpt:
     period: 1
 
 
-work_dir: ./workdir/qvinet/BSRSC
+work_dir: ./workdir/qvinet/darkrs
 resume_from: None
 # init_mode: True

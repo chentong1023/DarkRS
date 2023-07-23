@@ -340,3 +340,11 @@ class VIFlowDistillationLoss(nn.Module):
         loss_dis += 0.01 * (self.rb_loss(4.0 * resize(flow_0[2], 4.0) - flow0_1, weight=robust_weight0) + self.rb_loss(4.0 * resize(flow_1[2], 4.0) - flow1_1, weight=robust_weight1))
         loss_dis += 0.01 * (self.rb_loss(8.0 * resize(flow_0[3], 8.0) - flow0_1, weight=robust_weight0) + self.rb_loss(8.0 * resize(flow_1[3], 8.0) - flow1_1, weight=robust_weight1))
         return loss_dis
+
+@LOSS_REGISTRY.register()
+class ZeroShotDenoiseLoss(nn.Module):
+    def __init__(self):
+        super(ZeroShotDenoiseLoss, self).__init__()
+
+    def forward(self, x):
+        pass

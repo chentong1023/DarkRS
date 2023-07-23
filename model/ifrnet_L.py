@@ -169,10 +169,10 @@ class IFRNet_L(nn.Module):
         self.decoder3 = Decoder3()
         self.decoder2 = Decoder2()
         self.decoder1 = Decoder1()
-        self.init_chs = [32, 48, 72, 96]
+        self.init_chs = [64, 96, 144, 192]
         self.attn_num_splits = 1
         self.transformer = FeatureTransformer(num_layers=1,#
-                                              d_model=self.init_chs[-1],
+                                              d_model=384,
                                               nhead=1,
                                               attention_type='swin',
                                               ffn_dim_expansion=2,
